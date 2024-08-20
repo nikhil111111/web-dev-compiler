@@ -14,7 +14,7 @@ import { RootState } from "@/redux/Store";
 export default function HelperHeader() {
     const dispatch = useDispatch();
     const currentLanguage = useSelector(
-        (state: RootState) => state.CompilerSlice.currentLanguage
+        (state: RootState) => state.compilerSlice.currentLanguage
     );
     return (
         <div className="__helper_header h-[50px]  bg-black text-white p-2 flex justify-between items-center">
