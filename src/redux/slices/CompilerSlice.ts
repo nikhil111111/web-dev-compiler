@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { PayloadAction } from "@reduxjs/toolkit";
+import { PayloadAction } from "@reduxjs/toolkit/react";
 
 export interface CompilerSliceStateType {
     fullCode: {
@@ -8,34 +8,71 @@ export interface CompilerSliceStateType {
         javascript: string;
     };
     currentLanguage: "html" | "css" | "javascript";
+    isOwner: boolean;
 }
 
 const initialState: CompilerSliceStateType = {
     fullCode: {
         html: `
-<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple To-Do List By Nikhil Garg</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+  <body>
     <div class="container">
         <h1>To-Do List</h1>
-        <input type="text" id="taskInput" placeholder="Add a new task...">
-        <button id="addTaskBtn">Add Task</button>
+        <input type="text" id="taskInput" placeholder="Enter your task">
+        <button onclick="addTask()">Add Task</button>
         <ul id="taskList"></ul>
     </div>
-<script src="script.js"></script>
-</body>
-</html>`,
-        css: "this is css",
-        javascript: "this is javascript",
+  <script src="script.js"></script>
+  </body>
+</html>
+    `,
+        css: `
+  body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 50vh;
+      margin: 0;
+    border:1px solid blue;
+  }
+  
+  .container {
+      text-align: center;
+  }
+  
+  input {
+      padding: 8px;
+      margin-right: 8px;
+  }
+  
+  button {
+      padding: 8px;
+  }  
+    `,
+        javascript: `
+    function addTask() {
+  
+      var taskInput = document.getElementById('taskInput');
+      var taskList = document.getElementById('taskList');
+      if (taskInput.value !== '') {
+          var taskItem = document.createElement('li');
+          taskItem.textContent = taskInput.value;
+          taskList.appendChild(taskItem);
+          taskInput.value = '';
+  
+          taskItem.addEventListener('click', function () {
+              taskList.removeChild(taskItem);
+          });
+      }
+  }
+  
+    `,
     },
     currentLanguage: "html",
+    isOwner: false,
 };
+
 const compilerSlice = createSlice({
     name: "compilerSlice",
     initialState,
@@ -49,8 +86,22 @@ const compilerSlice = createSlice({
         updateCodeValue: (state, action: PayloadAction<string>) => {
             state.fullCode[state.currentLanguage] = action.payload;
         },
+        updateIsOwner: (state, action: PayloadAction<boolean>) => {
+            state.isOwner = action.payload;
+        },
+        updateFullCode: (
+            state,
+            action: PayloadAction<CompilerSliceStateType["fullCode"]>
+        ) => {
+            state.fullCode = action.payload;
+        },
     },
 });
 
 export default compilerSlice.reducer;
-export const { updateCurrentLanguage, updateCodeValue } = compilerSlice.actions;
+export const {
+    updateCurrentLanguage,
+    updateCodeValue,
+    updateFullCode,
+    updateIsOwner,
+} = compilerSlice.actions;
